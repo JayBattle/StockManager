@@ -10,32 +10,12 @@ import java.lang.Math;
  * @Author: Jay Battle
  * @title: StockTransaction.java
  * @Project: Stock Manager
- * @Course: Data Structures
- * @References: My alma mater, Dr.Praveen Madiraju, Dale Joyce & Weems,
- * @Purpose: Implement a Double Linked List based Stock Manager
- * @languages: Java
- * @Platform: Java App
- * @DevelopmentEnviorment: Eclipse Neon
- * @Version: 2.0
- * @Created: 10/27/2015
- * @Status: In revision
- * @Description: A command line based interface for stock management
- */
-
-/**
- * @Author: Jay Battle
- * @title: StockTransaction.java
- * @Project: Stock Manager
  * @References: My alma mater, Dr.Praveen Madiraju, Dale Joyce & Weems,
  * @Created: 10/27/2015
  * @Description: A command line based interface for stock management
  */
-
-
 
 public class StockTransaction {
-	
-	public static int DebugLevel = 0;
 
 	public static void main(String[] args) {
 	
@@ -48,37 +28,30 @@ public class StockTransaction {
 		    	StockDoubleLinkedList stockAmount = new StockDoubleLinkedList();
 		    	StockDoubleLinkedList stockPrice = new StockDoubleLinkedList();
 		    	StockDoubleLinkedList Transactions = new StockDoubleLinkedList();
-		    	StockDoubleLinkedList buyTransactions = new StockDoubleLinkedList();
-		    	
-				BufferedReader reader2 = null;
+		    	StockDoubleLinkedList buyTransactions = new StockDoubleLinkedList();		    	
+				BufferedReader reader = null;
 				try {
-					reader2 = new BufferedReader(new FileReader("stocks.txt"));
+					reader = new BufferedReader(new FileReader("stocks.txt"));
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
-				}
-				
+				}				
 				try {
-					while ((line = reader2.readLine()) != null) {  
+					while ((line = reader.readLine()) != null) {  
 						split = line.split(";");
 						stockCode.push(split[0]); 								
-						companyName.push(split[1]); 
-						if (DebugLevel<2) System.out.println(line);					
+						companyName.push(split[1]);
+						System.out.println(line);
 					}
 				} catch (IOException f) {
 					f.printStackTrace();
 				}
-				if (DebugLevel>0) System.out.println(stockCode);
-				if (DebugLevel>0) System.out.println(companyName);
-				
-				BufferedReader reader = null;
 				try {
-					reader2 = new BufferedReader(new FileReader("transactions.txt"));
+					reader = new BufferedReader(new FileReader("transactions.txt"));
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
-				}
-				
+				}				
 				try {
-					while ((line = reader2.readLine()) != null) {  
+					while ((line = reader.readLine()) != null) {  
 						split = line.split(";");
 						tStockCode.push(split[0]);
 						stockAction.push(split[1]); 
@@ -92,63 +65,39 @@ public class StockTransaction {
 					f.printStackTrace();
 				}
 				
-				if (DebugLevel>0) System.out.println(tStockCode);
-				if (DebugLevel>0) System.out.println(stockAction);
-				if (DebugLevel>0) System.out.println(stockAmount);
-				if (DebugLevel>0) System.out.println(stockPrice);
-				if (DebugLevel>0) System.out.println(Transactions);	
-				
-				System.out.println("Java StockTransaction");
+				System.out.println("Java Stock Manager");
 				System.out.println("--successfully read stocks.txt and transactions.txt");
-				System.out.println("Please enter a input stock quote for realized gain(or loss) for the stock : ");
+				System.out.println("Please enter a input stock quote for realized gain or loss for the stock: ");
 				Scanner scanner = new Scanner(System.in);
 				String stockRequest = scanner.nextLine(); 
 				scanner.close();
-				if (DebugLevel>0) System.out.println(Transactions);	
 				
 				double StockSellPrice = 0.0;
 				double capitalGain = 0.0;
 				double remainingStocks;
 				double StockSold = 0;
-				boolean found = false;
-				boolean found2 = false;
+				boolean stockFound = false;
+				boolean valueFound = false;
 				
 				while (!stockCode.isEmpty()) { 
-					StockDoubleLinkedListNode temp = new StockDoubleLinkedListNode(null);
-					StockDoubleLinkedListNode temp2 = new StockDoubleLinkedListNode(null);
-					temp = stockCode.getFirst();
+					StockDoubleLinkedListNode nodeA = new StockDoubleLinkedListNode(null);
+					StockDoubleLinkedListNode nodeB = new StockDoubleLinkedListNode(null);
+					nodeA = stockCode.getFirst();
 					stockCode.pop();
-					if (DebugLevel>2) System.out.println("Stock Array = " + stockCode);
-					if (DebugLevel>2) System.out.println(temp.getInfo());
-					String stockMatch = (String) temp.getInfo();
+					String stockMatch = (String) nodeA.getInfo();
 					if (stockRequest.equals(stockMatch)) {
-						found = true;
-						found2 = true;
+						stockFound = true;
+						valueFound = true;
 						while (!Transactions.isEmpty()) {
-							if (DebugLevel>3) System.out.println(Transactions);
-							temp2 = Transactions.getFirst();
+							nodeB = Transactions.getFirst();
 							Transactions.pop();
-							if (DebugLevel>3) System.out.println("Transactions Array = " + Transactions);
-							if (DebugLevel>3) System.out.println(temp2.getInfo());
-							if (DebugLevel>3) System.out.println(temp.getInfo());
-							stockMatch = (String) temp2.getInfo();
-							if (DebugLevel>3) System.out.println("Match " + Transactions);
-							if (stockRequest.equals(stockMatch)) {
-								if (DebugLevel>3) System.out.println(temp.getRecord().getTrade());
-								if (DebugLevel>3) System.out.println(" ");								
-								if (temp2.getRecord().getTrade().equals("buy")) {
-									if (DebugLevel>4) System.out.println("Buy");
-									buyTransactions.addLast(temp2);
-									if (DebugLevel>4)System.out.println(buyTransactions + "" + temp2);
-									if (DebugLevel>4)System.out.println("Shares Bought = " + temp2.getRecord().getShares());
-									if (DebugLevel>4)System.out.println("Share Price = " +temp2.getRecord().getPricePerShare());
-									if (DebugLevel>4)System.out.println("Stock Transactions Array = " +buyTransactions);							
+							stockMatch = (String) nodeB.getInfo();
+							if (stockRequest.equals(stockMatch)) {						
+								if (nodeB.getRecord().getTrade().equals("buy")) {
+									buyTransactions.addLast(nodeB);							
 								} else {
-									if (DebugLevel>4)System.out.println("Sell");
-									StockSold = temp2.getRecord().getShares();
-									StockSellPrice = temp2.getRecord().getPricePerShare();
-									if (DebugLevel>4)System.out.println(StockSold);	
-									if (DebugLevel>4)System.out.println(StockSellPrice);								
+									StockSold = nodeB.getRecord().getShares();
+									StockSellPrice = nodeB.getRecord().getPricePerShare();							
 									if (buyTransactions.isEmpty()) {
 										System.out.println("Sorry, there is an error condition associated with " + companyName.getFirst().getInfo() + " The number of sold shares exceeds the total buy quantity.");
 										System.exit(0);
@@ -166,35 +115,31 @@ public class StockTransaction {
 										} else {
 											capitalGain += buyTransactions.getFirst().getRecord().getShares()*(StockSellPrice - buyTransactions.getFirst().getRecord().getPricePerShare());
 											buyTransactions.pop();
-											if (DebugLevel>3) System.out.println(remainingStocks);
 											StockSold = (-1*remainingStocks);
-											if (DebugLevel>3)System.out.println(StockSold);
 											remainingStocks = StockSold;
 											if (buyTransactions.isEmpty()) {
 												System.out.println("Sorry, there is an error condition associated with " + companyName.getFirst().getInfo() + " The number of sold shares exceeds the total buy quantity.");
 												System.exit(0);
 											}
 										}	
-										if (DebugLevel>2) System.out.println("Current Gain " + capitalGain);
 									}
 								}
 							}
 						}
 					}
-					if (found == false) { 
+					if (stockFound == false) { 
 						companyName.pop();
 					}
 				}
-				if (found2){
-					StockDoubleLinkedListNode temp = new StockDoubleLinkedListNode(null);
-					temp = companyName.getFirst();
-					if (DebugLevel>1) System.out.println(temp.getInfo());
+				if (valueFound){
+					StockDoubleLinkedListNode tempNode = new StockDoubleLinkedListNode(null);
+					tempNode = companyName.getFirst();
 					if (capitalGain > 0) { 
-						System.out.println("Congratulations, your realized gain for " + temp.getInfo() + " is : $" + capitalGain);
+						System.out.println("Congratulations, your realized gain for " + tempNode.getInfo() + " is : $" + capitalGain);
 					} else if (capitalGain < 0) {
-						System.out.println("Sorry, your realized loss for " + temp.getInfo() + " is : $" + capitalGain);
+						System.out.println("Sorry, your realized loss for " + tempNode.getInfo() + " is : $" + capitalGain);
 					} else {
-						System.out.println("Sorry, no realized gain(or loss) reported for " + temp.getInfo());
+						System.out.println("Sorry, no realized gain(or loss) reported for " + tempNode.getInfo());
 					}
 				} else {	
 					System.out.println("Sorry, the stock quote does not exist in the system.");
